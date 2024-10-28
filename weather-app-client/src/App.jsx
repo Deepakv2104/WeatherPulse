@@ -64,7 +64,8 @@ const App = () => {
   };
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:3000');
+    console.log('WebSocket URI:', process.env.REACT_APP_SERVER_URI);  // Debug log
+    const ws = new WebSocket(process.env.REACT_APP_SERVER_URI);
     ws.onopen = () => ws.send(JSON.stringify({ city }));
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -73,6 +74,8 @@ const App = () => {
     };
     return () => ws.close();
   }, [city]);
+  
+  
 
   const handleCityChange = debounce((newCity) => {
     setCity(newCity);

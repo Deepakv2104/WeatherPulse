@@ -107,7 +107,7 @@ process.on('uncaughtException', (error) => {
 });
 
 // Start the server
-const PORT = config.PORT || 3000;
+const PORT = config.PORT || 2104;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

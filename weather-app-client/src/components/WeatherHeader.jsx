@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, RefreshCw, Search } from 'lucide-react';
-
+import logo from '../assets/logo.png'
 const WeatherHeader = ({ city, handleCityChange, setLoading }) => {
   const [inputValue, setInputValue] = useState(city);
   const [suggestions, setSuggestions] = useState([]); // To store city suggestions
@@ -60,10 +60,17 @@ const WeatherHeader = ({ city, handleCityChange, setLoading }) => {
 
   return (
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Weather Analytics Dashboard</h1>
-        <p className="text-gray-500">Comprehensive weather monitoring and analysis</p>
-      </div>
+      <div className="flex items-center gap-4">
+  {/* Logo */}
+  <img src="./src/assets/brand.jpeg" alt="WeatherPulse Logo" className="h-12 w-12" />
+
+  {/* Text (H1 and paragraph) */}
+  <div>
+    <h1 className="text-3xl font-bold text-gray-900">WeatherPulse</h1>
+    <p className="text-gray-500">Comprehensive weather monitoring and analysis.Powered by WaveFuels.</p>
+  </div>
+</div>
+
       <div className="flex items-center gap-4 w-full md:w-auto">
         <div className="relative flex-1 md:flex-none">
           <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
@@ -100,8 +107,8 @@ const WeatherHeader = ({ city, handleCityChange, setLoading }) => {
           onClick={handleSearchClick} // Call handleSearchClick when the Search button is clicked
           className="flex items-center gap-2 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg transition-all"
         >
-          <Search className="h-5 w-5" /> {/* Using the Search icon */}
-          Search
+          <Search className="h-6 w-6" /> {/* Using the Search icon */}
+          
         </button>
 
         <button

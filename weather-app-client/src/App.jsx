@@ -25,7 +25,7 @@ const LoadingOverlay = () => (
 const App = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [city, setCity] = useState('London');
+  const [city, setCity] = useState(''); // Default city is London
   const [activeTab, setActiveTab] = useState('conditions');
 
   const temperatureHistory = [
@@ -54,7 +54,6 @@ const App = () => {
     { time: '22:00', temp: 18 },
     { time: '23:00', temp: 16 }
   ];
-
   const windOptions = {
     loop: true,
     autoplay: true,
@@ -75,6 +74,54 @@ const App = () => {
     else if (temp > 10) return cool;
     else return cold;
   };
+
+  // Request the user's location
+  useEffect(() => {
+    const getUserLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            // Pass the coordinates to a function that can reverse geocode or fetch weather data directly
+            fetchCityFromCoordinates(latitude, longitude);
+          },
+          (error) => {
+            console.error('Error getting location:', error);
+            setLoading(false); // Stop loading if the user denies location access
+          }
+        );
+      } else {
+        console.error('Geolocation is not supported by this browser.');
+        setLoading(false);
+      }
+    };
+
+    const fetchCityFromCoordinates = async (latitude, longitude) => {
+      try {
+        // You can use an API like Google Maps Geocoding API to get the city from the coordinates
+        const response = await fetch(
+          `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
+        );
+        const data = await response.json();
+        const cityResult = data.results.find((result) =>
+          result.types.includes('locality')
+        );
+
+        if (cityResult) {
+          const userCity = cityResult.address_components[0].long_name;
+          setCity(userCity);  // Set the user's city
+        } else {
+          console.error('City not found from coordinates.');
+        }
+      } catch (error) {
+        console.error('Error fetching city from coordinates:', error);
+      } finally {
+        setLoading(false);  // Stop loading after fetching the city
+      }
+    };
+
+    getUserLocation();
+  }, []);
 
   useEffect(() => {
     const ws = new WebSocket(process.env.REACT_APP_SERVER_URI);

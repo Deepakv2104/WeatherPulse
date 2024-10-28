@@ -5,3 +5,4 @@ weather-app-backend/node_modules/
 # Ignore node_modules in client and backend
 weather-app-client/node_modules/
 weather-app-backend/.env
+weather-app-client/.env

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { debounce } from 'lodash';
 import wind from './assets/wind.json';
-import loader from './assets/loader.json'
+import loader from './assets/loader.json';
 import hot from './assets/hot.png';
 import cold from './assets/cold.png';
 import cool from './assets/cool.png';
@@ -12,11 +12,22 @@ import WindConditions from './components/WindConditions';
 import AirQuality from './components/AirQuality';
 import TabsComponent from './components/TabsComponent';
 import Lottie from 'react-lottie';
+
+const LoadingOverlay = () => (
+  <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div className="relative">
+      <div className="w-16 h-16 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin"></div>
+      <div className="mt-4 text-white font-medium">Loading...</div>
+    </div>
+  </div>
+);
+
 const App = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [city, setCity] = useState('London');
   const [activeTab, setActiveTab] = useState('conditions');
+
   const temperatureHistory = [
     { time: '00:00', temp: 15 },
     { time: '01:00', temp: 14 },
@@ -50,12 +61,14 @@ const App = () => {
     animationData: wind,
     rendererSettings: { preserveAspectRatio: 'xMidYMid slice' },
   };
+  
   const loaderOptons = {
     loop: true,
     autoplay: true,
     animationData: loader,
     rendererSettings: { preserveAspectRatio: 'xMidYMid slice' },
   };
+  
   const getWeatherImage = (temp) => {
     if (temp > 30) return hot;
     else if (temp > 20) return warm;
@@ -64,41 +77,48 @@ const App = () => {
   };
 
   useEffect(() => {
-    console.log('WebSocket URI:', process.env.REACT_APP_SERVER_URI);  // Debug log
     const ws = new WebSocket(process.env.REACT_APP_SERVER_URI);
-    ws.onopen = () => ws.send(JSON.stringify({ city }));
+
+    ws.onopen = () => {
+      ws.send(JSON.stringify({ city }));
+      setLoading(true);  // Set loading to true when the WebSocket connection is opened
+    };
+
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      setWeatherData(data);
-      setLoading(false);
+      setWeatherData(data);  // Update weather data
+      setLoading(false);     // Stop loading when data is received
     };
-    return () => ws.close();
+
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+      setLoading(false);     // Stop loading in case of error
+    };
+
+    ws.onclose = () => {
+      console.log('WebSocket closed');
+      setLoading(false);     // Ensure loading is stopped when WebSocket is closed
+    };
+
+    return () => ws.close();  // Cleanup WebSocket connection on component unmount
   }, [city]);
-  
-  
 
   const handleCityChange = debounce((newCity) => {
-    setCity(newCity);
-    setLoading(true);
+    if (newCity !== city) {   // Only change city and set loading if the city actually changes
+      setCity(newCity);
+      setLoading(true);
+    }
   }, 500);
-
-  if (!weatherData) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Lottie options={loaderOptons} height={100} width={100} />
-      </div>
-    );
-  }
-  
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
+      {loading && <LoadingOverlay />}  {/* Display the loading overlay while loading */}
       <div className="max-w-7xl mx-auto space-y-6">
         <WeatherHeader city={city} handleCityChange={handleCityChange} setLoading={setLoading} />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <CurrentConditions weatherData={weatherData} getWeatherImage={getWeatherImage} />
           <WindConditions weatherData={weatherData} windOptions={windOptions} />
-          <AirQuality airQuality={weatherData.air_quality} />
+          <AirQuality airQuality={weatherData?.air_quality} />
         </div>
         <TabsComponent activeTab={activeTab} setActiveTab={setActiveTab} temperatureHistory={temperatureHistory} weatherData={weatherData} />
       </div>

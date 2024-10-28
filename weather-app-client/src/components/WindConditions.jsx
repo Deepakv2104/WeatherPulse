@@ -8,13 +8,13 @@ const WindConditions = ({ weatherData, windOptions }) => {
       <div className="flex items-center justify-between">
         <div>
           <Wind className="h-8 w-8 text-blue-500" />
-          <p className="text-gray-500">Wind Chill: {weatherData.windchill_c}°C</p>
-          <p className="text-gray-500">Dew Point: {weatherData.dewpoint_c}°C</p>
+          <p className="text-gray-500">Wind Chill: {weatherData?.windchill_c}°C</p>
+          <p className="text-gray-500">Dew Point: {weatherData?.dewpoint_c}°C</p>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-bold">{weatherData.wind_kph} km/h</p>
-          <p className="text-gray-500">Direction: {weatherData.wind_dir}</p>
-          <p className="text-gray-500">Gusts: {weatherData.gust_kph} km/h</p>
+          <p className="text-2xl font-bold">{weatherData?.wind_kph} km/h</p>
+          <p className="text-gray-500">Direction: {weatherData?.wind_dir}</p>
+          <p className="text-gray-500">Gusts: {weatherData?.gust_kph} km/h</p>
         </div>
       </div>
       <Lottie options={windOptions} height={230} width={230} />

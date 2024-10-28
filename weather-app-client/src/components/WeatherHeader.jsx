@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MapPin, RefreshCw, Search } from 'lucide-react';
-import logo from '../assets/logo.png'
+import logo from '../assets/brand.jpeg'
 const WeatherHeader = ({ city, handleCityChange, setLoading }) => {
   const [inputValue, setInputValue] = useState(city);
   const [suggestions, setSuggestions] = useState([]); // To store city suggestions
@@ -62,7 +62,7 @@ const WeatherHeader = ({ city, handleCityChange, setLoading }) => {
     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
       <div className="flex items-center gap-4">
   {/* Logo */}
-  <img src="./src/assets/brand.jpeg" alt="WeatherPulse Logo" className="h-12 w-12" />
+  <img src={logo} alt="WeatherPulse Logo" className="h-12 w-12" />
 
   {/* Text (H1 and paragraph) */}
   <div>

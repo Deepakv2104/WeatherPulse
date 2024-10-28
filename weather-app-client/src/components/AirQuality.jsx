@@ -152,7 +152,7 @@ const AirQuality = ({ airQuality }) => {
 
   return (
     <div className="bg-white rounded-lg shadow-md p-4 relative">
-      <div className={`absolute top-2 right-2 px-2 py-1 rounded-lg font-bold text-sm ${getBackgroundColor(overallStatus.color)} ${getTextColor(overallStatus.color)}`}>
+      <div className={`absolute top-2 right-2 px-2 py-1 rounded-lg font-bold text-xs ${getBackgroundColor(overallStatus.color)} ${getTextColor(overallStatus.color)}`}>
         {overallStatus.label}
       </div>
 
